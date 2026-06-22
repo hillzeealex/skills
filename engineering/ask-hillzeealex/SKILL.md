@@ -14,7 +14,7 @@ A **flow** is a path through the skills. Most paths run along one **main flow**,
 
 The route most work travels. You have an idea and want it built.
 
-1. **`/grill-with-docs`** — sharpen the idea by interview. Start here when you **have a codebase**: it's stateful, retaining what it learns in `CONTEXT.md` and ADRs. (No codebase? Use `/grill-me` — see Standalone.)
+1. **`/grill-with-docs`** — sharpen the idea by interview. Start here when you **have a codebase**: it's stateful, retaining what it learns in `CONTEXT.md` and ADRs. (No codebase? Use `/grill-me` — see Standalone. Idea too big to resolve in one session? Use **`/decision-mapping`** to break it into a sequenced map of investigation tickets — Research / Prototype / Discuss — each sized to one session, then drive them one at a time.)
 2. **Branch — can you settle every question in conversation?** If a question needs a runnable answer (state, business logic, a UI you have to see), detour through a prototype, bridged by **`/handoff`** in both directions (see Crossing sessions):
    - **`/handoff`** out, then open a fresh session against that file,
    - **`/prototype`** to answer the question with throwaway code,
@@ -62,6 +62,33 @@ Off the main flow entirely.
 - **`/edit-article`** — restructure and tighten an existing article draft, section by section.
 - **`/writing-great-skills`** — reference for writing and editing skills well.
 - **Writing from raw material** (work-in-progress skills): **`/writing-fragments`** to mine and collect fragments before structure, then **`/writing-shape`** or **`/writing-beats`** to turn the pile into an article.
+
+## Always-on (auto skills)
+
+You don't invoke these — they're **model-invoked**, so they fire on their own when relevant. Listed here only so you know they exist and what they cover:
+
+- **`codebase-design`** — the shared vocabulary for deep modules (module, interface, depth, seam, adapter, leverage, locality). Underpins every design discussion.
+- **`domain-modeling`** — actively builds and sharpens the domain model (`CONTEXT.md`, ADRs) as you design.
+- **`diagnosing-bugs`** — the diagnosis loop for hard bugs and perf regressions; builds a tight feedback loop first.
+- **`tdd`** — test-driven development through public interfaces, vertical slices over horizontal.
+- **`resolving-merge-conflicts`** — works through an in-progress merge/rebase, preserving both intents.
+- **`review`** — two-axis review (Standards + Spec) of the diff since a fixed point, in parallel sub-agents.
+- **`grilling`** — the relentless plan-stressing interview (`grill-me` / `grill-with-docs` are the manual wrappers).
+- **`scaffold-exercises`** — scaffolds lint-passing exercise directory structures.
+- **`migrate-to-shoehorn`** — migrates test files from `as` assertions to `@total-typescript/shoehorn`.
+
+## Other routers
+
+- **`/ask-matt`** — the upstream router this one is based on. Same main flow, without my additions (hackguard, git/pre-commit setup, the writing flow, decision-mapping).
+
+## Deprecated
+
+Superseded — kept only for reference; reach for the replacement instead:
+
+- **`/ubiquitous-language`** → use **`domain-modeling`**.
+- **`design-an-interface`** → folded into **`codebase-design`**.
+- **`request-refactor-plan`** → use **`/to-issues`** / **`/triage`**.
+- **`qa`** → use **`/triage`**.
 
 ## Precondition
 
