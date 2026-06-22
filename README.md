@@ -2,7 +2,7 @@
 
 A personal collection of [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) for Claude Code — workflows and shared vocabulary I reuse across projects, versioned in one place and easy to reinstall.
 
-The bulk of this collection is mirrored from [**@mattpocock/skills**](https://github.com/mattpocock/skills) ("Skills For Real Engineers"), kept faithful to upstream so I can pull updates. My own skills live under [`security/`](security/).
+Most of this collection is mirrored faithfully from [**@mattpocock/skills**](https://github.com/mattpocock/skills) ("Skills For Real Engineers") so I can pull updates. My own skill lives under [`security/`](security/).
 
 ---
 
@@ -14,107 +14,121 @@ cd skills
 ./install.sh
 ```
 
-`install.sh` finds every folder containing a `SKILL.md` and copies it into `~/.claude/skills/`. Start a new Claude Code session and they're live. Re-run anytime to sync updates.
-
-Install a single skill by hand instead:
+`install.sh` finds every folder containing a `SKILL.md` and copies it into `~/.claude/skills/`. Start a new Claude Code session and they're live. Re-run anytime to sync updates. Install just one by hand instead:
 
 ```bash
 cp -R engineering/codebase-design ~/.claude/skills/
 ```
 
-> **Tip** — a skill is fully self-contained: a `SKILL.md` (frontmatter `name` + `description`, then instructions) plus any supporting files in its folder. Nothing else is needed.
+> A skill is fully self-contained: a `SKILL.md` (frontmatter `name` + `description`, then instructions) plus any supporting files in its folder.
+
+## Auto vs manual
+
+Claude reads each skill's `description` and fires an **auto** skill on its own when it's relevant. A **manual** skill sets `disable-model-invocation: true` — it never fires automatically; you invoke it by name (e.g. *"use the prototype skill"*). Manual is for the heavier, intentional workflows you want to opt into. Each skill below is tagged accordingly.
 
 ---
 
-## How skills get invoked
+## 🛠 Engineering
 
-Claude reads each skill's `description` and invokes it **automatically** when it's relevant.
+These chain into one **idea → ship** flow: grill the idea, model the domain, design deep modules, turn it into a PRD and issues, implement test-first, review. `ask-matt` is the map over all of them.
 
-Skills tagged **`manual`** below set `disable-model-invocation: true` — Claude won't trigger them on its own; you call them by name (e.g. *"use the prototype skill"*). These are the heavier, intentional workflows you want to opt into rather than have fire automatically.
+**[ask-matt](engineering/ask-matt/)** · *manual* — A router over the whole repo. You don't remember every skill, so this one names the main flow (idea → ship), the on-ramps that merge onto it, and the standalone skills, and tells you which to reach for. Start here when you're unsure.
+
+**[codebase-design](engineering/codebase-design/)** · *auto* — The shared vocabulary for designing **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through it. Defines the exact terms (module, interface, implementation, depth, seam, adapter, leverage, locality) so every other design skill speaks the same language instead of drifting into "component/service/API".
+
+**[domain-modeling](engineering/domain-modeling/)** · *auto* — The *active* discipline of building a project's domain model: challenging terms, inventing edge-case scenarios, and writing the glossary (`CONTEXT.md`) and decisions (ADRs) down the moment they crystallise. For when you're changing the model, not just reading it.
+
+**[diagnosing-bugs](engineering/diagnosing-bugs/)** · *auto* — A diagnosis loop for hard bugs and performance regressions. Its core lesson: build a **tight feedback loop** first (a failing test, a curl script, a replay harness, a bisection loop…) — with a signal that goes red on *this* bug, you'll find the cause; without one, staring at code won't save you.
+
+**[tdd](engineering/tdd/)** · *auto* — Test-driven development done right: test behaviour through public interfaces, never implementation details. Enforces **vertical slices** (one test → one impl → repeat) over the horizontal "write all tests, then all code" anti-pattern that produces tests insensitive to real changes.
+
+**[grill-with-docs](engineering/grill-with-docs/)** · *manual* — A `grilling` interview combined with `domain-modeling`: it sharpens a plan by relentless questioning **and** drops ADRs + glossary entries as you go. The stateful starting point when you have a codebase.
+
+**[prototype](engineering/prototype/)** · *manual* — Build throwaway code that answers one question. Two branches: a runnable **terminal app** to pressure-test a state/logic model, or several **radically different UI variations** toggleable from one route. Throwaway from day one, no persistence, no polish — capture the answer, then delete.
+
+**[implement](engineering/implement/)** · *manual* — Implement a piece of work from a PRD or a set of issues. Uses `tdd` at pre-agreed seams, runs typecheck and tests as it goes, then `review` at the end and commits to the current branch.
+
+**[to-prd](engineering/to-prd/)** · *manual* — Turn the current conversation into a PRD and publish it to the issue tracker — no interview, pure synthesis of what you've already discussed. Sketches the test seams (prefer the fewest, highest seams) and writes an extensive set of user stories.
+
+**[to-issues](engineering/to-issues/)** · *manual* — Break a plan/spec/PRD into independently-grabbable issues using **tracer-bullet vertical slices** — each a thin but complete path through every layer (schema → API → UI → tests), demoable on its own, with explicit "blocked by" dependencies.
+
+**[triage](engineering/triage/)** · *manual* — Move issues and external PRs through a small state machine of triage roles (category: bug/enhancement; states: needs-triage → needs-info → ready-for-agent…), ending in agent-ready briefs. Every posted comment carries an "AI-generated during triage" disclaimer.
+
+**[resolving-merge-conflicts](engineering/resolving-merge-conflicts/)** · *auto* — Work through an in-progress merge/rebase: understand the original intent behind each side (commits, PRs, issues), preserve both where possible, pick the one matching the merge's goal where not, run the project's checks, and always finish — never `--abort`.
+
+**[setup-matt-pocock-skills](engineering/setup-matt-pocock-skills/)** · *manual* — One-time per-repo setup the engineering skills assume: where issues live (GitHub or local markdown), the triage label vocabulary, and where `CONTEXT.md` + ADRs go. Prompt-driven — explore, confirm, write. Run once before first use.
 
 ---
 
-## Skills
+## ⚡ Productivity
 
-### 🛠 Engineering
+**[grilling](productivity/grilling/)** · *auto* — Interview you relentlessly about every aspect of a plan, walking down each branch of the design tree one decision at a time, resolving dependencies, and offering a recommended answer for each question. Stress-tests a design before any code is written.
 
-The core engineering loop: model the domain, design deep modules, drive work through issues, implement, and debug.
+**[grill-me](productivity/grill-me/)** · *manual* — The same relentless interview, invoked on demand (a thin manual wrapper over `grilling`).
 
-| Skill | | What it does |
-|---|---|---|
-| [codebase-design](engineering/codebase-design/) | auto | Shared vocabulary for designing **deep modules** — a lot of behaviour behind a small interface, at a clean seam, testable through it. |
-| [domain-modeling](engineering/domain-modeling/) | auto | Build and sharpen a project's domain model, pin down the ubiquitous language, and record decisions as ADRs. |
-| [diagnosing-bugs](engineering/diagnosing-bugs/) | auto | A diagnosis loop for hard bugs and performance regressions. Triggers on "diagnose" / "debug this" / something broken or slow. |
-| [tdd](engineering/tdd/) | auto | Test-driven development — red-green-refactor, build features and fix bugs test-first. |
-| [resolving-merge-conflicts](engineering/resolving-merge-conflicts/) | auto | Work through an in-progress git merge/rebase conflict safely. |
-| [improve-codebase-architecture](engineering/improve-codebase-architecture/) | **manual** | Scan a codebase for deepening opportunities, render them as a visual HTML report, then grill through whichever one you pick. |
-| [grill-with-docs](engineering/grill-with-docs/) | **manual** | A relentless interview to sharpen a plan, producing ADRs + a glossary as you go. |
-| [prototype](engineering/prototype/) | **manual** | Build a throwaway prototype — a runnable terminal app for logic questions, or several toggleable UI variations. |
-| [implement](engineering/implement/) | **manual** | Implement a piece of work from a PRD or a set of issues. |
-| [to-prd](engineering/to-prd/) | **manual** | Turn the current conversation into a PRD and publish it to the issue tracker. |
-| [to-issues](engineering/to-issues/) | **manual** | Break a plan/spec/PRD into independently-grabbable issues using tracer-bullet vertical slices. |
-| [triage](engineering/triage/) | **manual** | Move issues and external PRs through a triage state machine, ending in agent-ready briefs. |
-| [setup-matt-pocock-skills](engineering/setup-matt-pocock-skills/) | **manual** | One-time setup for the engineering flow — issue tracker, triage labels, domain doc layout. |
-| [ask-matt](engineering/ask-matt/) | **manual** | A router that recommends which skill or flow fits your current situation. |
+**[handoff](productivity/handoff/)** · *manual* — Compact the current conversation into a handoff document (saved to the OS temp dir, not the repo) so a fresh agent can continue — including a "suggested skills" section, references to existing artifacts instead of duplication, and redaction of secrets.
 
-### ⚡ Productivity
+**[teach](productivity/teach/)** · *manual* — Teach you a topic across multiple sessions, treating the current directory as a stateful teaching workspace: a `MISSION.md`, reference cheat-sheets, learning records (ADR-style), and self-contained HTML lessons scoped to the mission.
 
-| Skill | | What it does |
-|---|---|---|
-| [grilling](productivity/grilling/) | auto | Interview you relentlessly about a plan or design to stress-test it before any code is written. |
-| [grill-me](productivity/grill-me/) | **manual** | The same relentless interview, on demand. |
-| [handoff](productivity/handoff/) | **manual** | Compact the current conversation into a handoff doc for another agent to pick up. |
-| [teach](productivity/teach/) | **manual** | Teach you a new skill or concept inside this workspace. |
-| [writing-great-skills](productivity/writing-great-skills/) | **manual** | Reference for the vocabulary and principles that make a skill predictable — for writing your own. |
+**[writing-great-skills](productivity/writing-great-skills/)** · *manual* — The reference for authoring skills well. A skill exists to wrangle **predictability** out of a stochastic system; this covers the levers — model- vs user-invocation and their context/cognitive-load tradeoffs, how to write a triggering description, router skills — that make a skill fire the same process every run.
 
-### 📝 Personal
+---
 
-| Skill | | What it does |
-|---|---|---|
-| [obsidian-vault](personal/obsidian-vault/) | auto | Search, create, and organise notes in an Obsidian vault with wikilinks and index notes. |
-| [edit-article](personal/edit-article/) | **manual** | Restructure, clarify, and tighten an article draft. |
+## 📝 Personal
 
-### 🔧 Misc
+**[obsidian-vault](personal/obsidian-vault/)** · *auto* — Search, create, and organise notes in an Obsidian vault using `[[wikilinks]]` and index notes, with the vault's conventions baked in (title case, flat structure, links over folders).
+
+**[edit-article](personal/edit-article/)** · *manual* — Edit an article by splitting it into sections, ordering them so information dependencies are respected (treat info as a DAG), then rewriting each section for clarity with a tight per-paragraph length budget.
+
+---
+
+## 🔧 Misc
 
 Repo-setup and migration helpers.
 
-| Skill | | What it does |
-|---|---|---|
-| [git-guardrails-claude-code](misc/git-guardrails-claude-code/) | auto | Claude Code hooks that block dangerous git commands (push, reset --hard, clean, branch -D) before they run. |
-| [setup-pre-commit](misc/setup-pre-commit/) | auto | Husky pre-commit hooks with lint-staged (Prettier), type-checking, and tests. |
-| [scaffold-exercises](misc/scaffold-exercises/) | auto | Scaffold exercise directories (sections, problems, solutions, explainers) that pass linting. |
-| [migrate-to-shoehorn](misc/migrate-to-shoehorn/) | auto | Migrate test files from `as` assertions to `@total-typescript/shoehorn`. |
+**[git-guardrails-claude-code](misc/git-guardrails-claude-code/)** · *auto* — Install a PreToolUse hook that blocks dangerous git commands before Claude runs them — `push` (incl. `--force`), `reset --hard`, `clean -f`, `branch -D`, `checkout .` — surfacing a "not authorised" message instead.
 
-### 🔒 Security *(mine)*
+**[setup-pre-commit](misc/setup-pre-commit/)** · *auto* — Set up Husky pre-commit hooks with lint-staged (Prettier), plus typecheck and test scripts, auto-detecting the package manager from the lockfile.
 
-| Skill | | What it does |
-|---|---|---|
-| [hackguard](security/hackguard/) | auto | Professional website security audit — HTTPS/TLS, DNS, headers, SPF/DMARC, misconfigs, exposed files. Powers the auditor at [mysiteishackable.com](https://mysiteishackable.com). |
+**[scaffold-exercises](misc/scaffold-exercises/)** · *auto* — Scaffold exercise directory structures (sections, `problem/` / `solution/` / explainer variants) that pass the AI Hero lint, with the project's dash-case numbering convention.
+
+**[migrate-to-shoehorn](misc/migrate-to-shoehorn/)** · *auto* — Migrate **test** files from `as` type assertions to `@total-typescript/shoehorn`, keeping partial test data type-safe (test code only — never production).
 
 ---
 
-### 🚧 In progress
+## 🔒 Security *(mine)*
 
-Upstream work-in-progress — useful but rougher edges. *(auto unless noted)*
+**[hackguard](security/hackguard/)** · *auto* — A professional, non-intrusive website security auditor. Runs passive, read-only checks against a domain in parallel — HTTPS/TLS, DNS, security headers, SPF/DMARC, misconfigs, exposed files — and produces a scored, graded report with remediation guidance. Enforces an ethics rule (only scan what you own or are authorised to test). Powers the auditor at [mysiteishackable.com](https://mysiteishackable.com).
 
-| Skill | | What it does |
-|---|---|---|
-| [review](in-progress/review/) | auto | Review changes since a fixed point along two axes — **Standards** (repo coding standards) and **Spec** (matches the originating issue/PRD) — in parallel sub-agents, side by side. |
-| [writing-shape](in-progress/writing-shape/) | auto | Shape a markdown pile of notes into an article, paragraph by paragraph, arguing format at each step. |
-| [writing-fragments](in-progress/writing-fragments/) | auto | A grilling session that mines you for writing fragments and collects them as raw material. |
-| [writing-beats](in-progress/writing-beats/) | auto | Assemble an article as a journey of beats, choose-your-own-adventure style. |
-| [decision-mapping](in-progress/decision-mapping/) | **manual** | Turn a loose idea into a sequenced map of investigation tickets, then drive them to resolution. |
+---
 
-### 🗄 Deprecated
+## 🚧 In progress
 
-Kept for reference; superseded by the skills above. *(auto unless noted)*
+Upstream work-in-progress — useful but rougher edges.
 
-| Skill | | Superseded by |
-|---|---|---|
-| [ubiquitous-language](deprecated/ubiquitous-language/) | **manual** | → `domain-modeling` |
-| [design-an-interface](deprecated/design-an-interface/) | auto | → `codebase-design` |
-| [request-refactor-plan](deprecated/request-refactor-plan/) | auto | → `to-issues` / `triage` |
-| [qa](deprecated/qa/) | auto | → `triage` |
+**[review](in-progress/review/)** · *auto* — Two-axis review of the diff since a fixed point you supply: **Standards** (does it follow the repo's documented coding standards?) and **Spec** (does it implement the originating issue/PRD?), run as parallel sub-agents so they don't pollute each other's context, then aggregated side by side.
+
+**[decision-mapping](in-progress/decision-mapping/)** · *manual* — Turn a loose idea too big for one session into a stateful, git-tracked **decision map**: numbered tickets (Research / Prototype / Discuss), each sized to one ~100K-token session, driven to resolution one at a time.
+
+**[writing-fragments](in-progress/writing-fragments/)** · *auto* — A grilling session that mines you for **fragments** — sharp sentences, vignettes, half-thoughts, claims — and appends them to one document as raw material, deliberately *before* imposing any structure.
+
+**[writing-shape](in-progress/writing-shape/)** · *auto* — Take a markdown pile of raw material (read-only) and shape it into a separate article through a conversational loop — drafting openings, growing it paragraph by paragraph, arguing format (lists, tables, callouts) at each step.
+
+**[writing-beats](in-progress/writing-beats/)** · *auto* — Assemble an article as a journey of **beats**, choose-your-own-adventure style: you pick a starting beat from the raw material, it writes only that beat, then offers next directions, beat by beat, until a natural end.
+
+---
+
+## 🗄 Deprecated
+
+Kept for reference; superseded by the skills above.
+
+**[ubiquitous-language](deprecated/ubiquitous-language/)** · *manual* — Extract a DDD glossary from the conversation to `UBIQUITOUS_LANGUAGE.md`, flagging ambiguities/synonyms. → superseded by **domain-modeling**.
+
+**[design-an-interface](deprecated/design-an-interface/)** · *auto* — "Design It Twice": generate 3+ radically different interface designs via parallel sub-agents, then compare. → folded into **codebase-design**.
+
+**[request-refactor-plan](deprecated/request-refactor-plan/)** · *auto* — Interview-driven refactor plan broken into tiny always-green commits, filed as a GitHub issue. → superseded by **to-issues** / **triage**.
+
+**[qa](deprecated/qa/)** · *auto* — Conversational QA session that files durable, user-focused GitHub issues, exploring the codebase in the background for domain language. → superseded by **triage**.
 
 ---
 
