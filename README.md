@@ -32,7 +32,9 @@ Claude reads each skill's `description` and fires an **auto** skill on its own w
 
 These chain into one **idea → ship** flow: grill the idea, model the domain, design deep modules, turn it into a PRD and issues, implement test-first, review. `ask-matt` is the map over all of them.
 
-**[ask-matt](engineering/ask-matt/)** · *manual* — A router over the whole repo. You don't remember every skill, so this one names the main flow (idea → ship), the on-ramps that merge onto it, and the standalone skills, and tells you which to reach for. Start here when you're unsure.
+**[ask-hillzeealex](engineering/ask-hillzeealex/)** · *manual* — My router over the whole repo. You don't remember every skill, so this one names the main flow (idea → ship), the on-ramps that merge onto it (including `hackguard` for security), the codebase-health and writing skills, and tells you which to reach for. Start here when you're unsure.
+
+**[ask-matt](engineering/ask-matt/)** · *manual* — The upstream router, kept as-is. Same idea as `ask-hillzeealex` but without my additions (hackguard, git/pre-commit setup, the writing flow).
 
 **[codebase-design](engineering/codebase-design/)** · *auto* — The shared vocabulary for designing **deep modules**: a lot of behaviour behind a small interface, placed at a clean seam, testable through it. Defines the exact terms (module, interface, implementation, depth, seam, adapter, leverage, locality) so every other design skill speaks the same language instead of drifting into "component/service/API".
 
