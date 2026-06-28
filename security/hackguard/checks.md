@@ -1,4 +1,4 @@
-# HackGuard — Check Commands Reference
+# HackGuard - Check Commands Reference
 
 All commands use `$TARGET` (clean hostname, e.g. `example.com`).
 Set timeout to 5s on all curl calls. Use `|| true` to prevent early exit.
@@ -58,11 +58,11 @@ echo | openssl s_client -connect "$TARGET:443" -servername "$TARGET" 2>/dev/null
 
 | Check | PASS | WARN | FAIL |
 |-------|------|------|------|
-| HTTPS available | connects OK | — | connection refused/timeout |
-| HTTP redirect | 301/302 to https | — | no redirect |
+| HTTPS available | connects OK | - | connection refused/timeout |
+| HTTP redirect | 301/302 to https | - | no redirect |
 | Cert expiry | > 30 days | 15–30 days | < 15 days or expired |
 | TLS version | TLS 1.2+ only | TLS 1.1 accepted | TLS 1.0 or SSL accepted |
-| Cert issuer | trusted CA | self-signed = WARN | — |
+| Cert issuer | trusted CA | self-signed = WARN | - |
 
 ---
 
@@ -109,7 +109,7 @@ dig +short TXT "$TARGET" 2>/dev/null | grep "v=spf1"
 # DMARC record
 dig +short TXT "_dmarc.$TARGET" 2>/dev/null
 
-# DKIM — check common selectors
+# DKIM - check common selectors
 for selector in google default selector1 selector2 k1 mail dkim; do
   result=$(dig +short TXT "${selector}._domainkey.$TARGET" 2>/dev/null)
   if [ -n "$result" ]; then
@@ -128,15 +128,15 @@ dig +short TXT "_mta-sts.$TARGET" 2>/dev/null
 |-------|------|------|------|
 | SPF | `v=spf1` present | `+all` = too permissive | missing |
 | DMARC | `v=DMARC1` present | `p=none` = no enforcement | missing |
-| DKIM | any selector found | — | no selectors found |
-| BIMI | `v=BIMI1` in TXT | — | — (info only) |
+| DKIM | any selector found | - | no selectors found |
+| BIMI | `v=BIMI1` in TXT | - | - (info only) |
 
 ---
 
 ## E. Misconfigurations
 
 ```bash
-# Probe sensitive paths — check HTTP status code only
+# Probe sensitive paths - check HTTP status code only
 for path in \
   "/.git/HEAD" \
   "/.git/config" \
@@ -220,7 +220,7 @@ for sub in www mail api dev staging admin portal app beta test; do
 done
 ```
 
-Report all that resolve as `ℹ INFO`. Flag `dev`, `staging`, `test` as WARN if they resolve publicly — they may lack security hardening.
+Report all that resolve as `ℹ INFO`. Flag `dev`, `staging`, `test` as WARN if they resolve publicly - they may lack security hardening.
 
 ---
 
@@ -229,12 +229,12 @@ Report all that resolve as `ℹ INFO`. Flag `dev`, `staging`, `test` as WARN if 
 ```bash
 # Check if nmap is available first
 if command -v nmap &>/dev/null; then
-  # Scan common web ports only — non-intrusive, no SYN scan
+  # Scan common web ports only - non-intrusive, no SYN scan
   nmap -p 80,443,8080,8443,8888,3000,5000 --open -T3 \
     --host-timeout 10s "$TARGET" 2>/dev/null | grep "open"
 else
-  echo "nmap not available — skipping port scan"
+  echo "nmap not available - skipping port scan"
 fi
 ```
 
-Flag unexpected open ports (8080, 8888, 3000, 5000) as WARN — often development servers exposed publicly.
+Flag unexpected open ports (8080, 8888, 3000, 5000) as WARN - often development servers exposed publicly.

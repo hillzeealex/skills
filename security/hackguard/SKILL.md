@@ -7,7 +7,7 @@ description: >
   for", "scan my website", "is this domain secure", "run a security check on",
   "check headers for", "test my site security", "pentest", "vulnerability scan",
   or any mention of checking HTTPS, DNS, headers, misconfigs, TLS, SPF, DMARC,
-  or exposed files on a domain. Always use this skill — even for quick one-liner
+  or exposed files on a domain. Always use this skill - even for quick one-liner
   requests like "check headers for example.com". This skill powers the HackGuard
   auditor from mysiteishackable.com.
   ALSO use it for application-level security on a codebase the user owns: "find
@@ -16,7 +16,7 @@ description: >
   access control", "is my app secure".
 ---
 
-# HackGuard — Website Security Auditor
+# HackGuard - Website Security Auditor
 
 A professional, non-intrusive security auditing skill. Runs passive read-only
 checks against any domain and produces a structured report with score, grade,
@@ -24,7 +24,7 @@ and remediation guidance.
 
 **⚠ Ethics rule**: Only scan/test assets the user owns or has explicit permission
 to test. Always confirm this before running. **Active (dynamic) testing runs only
-against a local or staging instance — never against production or any system
+against a local or staging instance - never against production or any system
 serving real user data.** No DoS, no destructive mutations, no detection evasion.
 
 ---
@@ -35,9 +35,9 @@ Pick the mode from what the user asked for. Modes combine.
 
 | Mode | Use when | Where |
 |---|---|---|
-| **A — External passive scan** | "audit/scan this site", "check headers", a bare domain/URL | This file (Workflow below) |
-| **B — White-box code audit** | "find vulnerabilities in my app", "audit my code", source access available | → `appsec.md` (Mode B) |
-| **C — Dynamic pentest** | "try to hack my app", "pentest it", active probing | → `appsec.md` (Mode C) — **local/staging only** |
+| **A - External passive scan** | "audit/scan this site", "check headers", a bare domain/URL | This file (Workflow below) |
+| **B - White-box code audit** | "find vulnerabilities in my app", "audit my code", source access available | → `appsec.md` (Mode B) |
+| **C - Dynamic pentest** | "try to hack my app", "pentest it", active probing | → `appsec.md` (Mode C) - **local/staging only** |
 
 - Bare domain / external posture → **Mode A**, follow the Workflow below.
 - "Find vulnerabilities / hack my app" with a repo present → **Modes B + C**:
@@ -48,7 +48,7 @@ Pick the mode from what the user asked for. Modes combine.
 
 ---
 
-## Workflow (Mode A — external passive scan)
+## Workflow (Mode A - external passive scan)
 
 1. Parse and normalize the target URL → extract hostname
 2. Confirm with user if domain looks unusual or sensitive
@@ -58,7 +58,7 @@ Pick the mode from what the user asked for. Modes combine.
 
 ---
 
-## Step 1 — Parse Target
+## Step 1 - Parse Target
 
 Extract the clean hostname from whatever the user provides:
 - `https://example.com/path?q=1` → `example.com`
@@ -69,7 +69,7 @@ Store as `$TARGET` for all subsequent commands.
 
 ---
 
-## Step 2 — Run All Checks
+## Step 2 - Run All Checks
 
 Run these bash commands. Collect stdout + exit codes. Continue even if individual
 checks fail (use `|| true`).
@@ -80,18 +80,18 @@ Read the full check references before running:
 
 ### Check Modules
 
-**A. HTTP Headers** — fetch live headers, analyze security posture
-**B. TLS/SSL** — certificate validity, HTTPS redirect, HSTS
-**C. DNS Records** — A, MX, TXT, NS, CNAME resolution
-**D. Email Security** — SPF, DMARC, DKIM hints
-**E. Misconfigurations** — exposed files, admin panels, directory listing
-**F. Technology Fingerprint** — server/framework exposure
-**G. Subdomain Hints** — common subdomains (www, mail, admin, api, dev, staging)
-**H. Open Ports** (if nmap available) — common web ports
+**A. HTTP Headers** - fetch live headers, analyze security posture
+**B. TLS/SSL** - certificate validity, HTTPS redirect, HSTS
+**C. DNS Records** - A, MX, TXT, NS, CNAME resolution
+**D. Email Security** - SPF, DMARC, DKIM hints
+**E. Misconfigurations** - exposed files, admin panels, directory listing
+**F. Technology Fingerprint** - server/framework exposure
+**G. Subdomain Hints** - common subdomains (www, mail, admin, api, dev, staging)
+**H. Open Ports** (if nmap available) - common web ports
 
 ---
 
-## Step 3 — Score & Grade
+## Step 3 - Score & Grade
 
 Read `/src/references/scoring.md` for weights.
 
@@ -110,7 +110,7 @@ Read `/src/references/scoring.md` for weights.
 
 ---
 
-## Step 4 — Output Report
+## Step 4 - Output Report
 
 Use this exact report format:
 
@@ -196,7 +196,7 @@ Adapt the report to actual findings. Always show remediation for every FAIL/WARN
 
 ## Error Handling
 
-- If a command times out: mark as `ℹ INFO — could not reach (timeout)`
+- If a command times out: mark as `ℹ INFO - could not reach (timeout)`
 - If DNS doesn't resolve: abort early, report "domain does not resolve"
 - If HTTPS entirely unavailable: mark TLS section as full FAIL, adjust score
 - Never crash the full audit because one check failed

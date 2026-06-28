@@ -13,7 +13,7 @@
 HackGuard is a Claude Code skill that turns Claude into a full security auditor.  
 Just type `audit https://yourdomain.com` and get a complete security report in seconds.
 
-**Free tier** → [mysiteishackable.com](https://mysiteishackable.com) — paste a URL, get a quick scan in your browser.  
+**Free tier** → [mysiteishackable.com](https://mysiteishackable.com) - paste a URL, get a quick scan in your browser.  
 **HackGuard skill** → install once in Claude Code, get deep audits from your terminal anytime.
 
 ---
@@ -28,7 +28,7 @@ Just type `audit https://yourdomain.com` and get a complete security report in s
 | 📧 Email Security | SPF, DMARC, DKIM selectors, MTA-STS |
 | ⚠️ Misconfigurations | Exposed .git, .env, phpMyAdmin, admin panels, backup files, directory listing, 20+ paths |
 | 🔍 Fingerprinting | Server/framework version exposure, X-Powered-By |
-| 🌍 Subdomains | dev, staging, api, admin — flags publicly exposed pre-prod environments |
+| 🌍 Subdomains | dev, staging, api, admin - flags publicly exposed pre-prod environments |
 | 🔌 Open Ports | Common web ports via nmap (if available) |
 
 ---
@@ -96,7 +96,7 @@ Scanned : 2024-01-15 14:32:11 UTC
 
 ═══════════════════════════════════════════════
 CRITICAL FIXES:
-  1. 🚨 /.git/HEAD is exposed — take down immediately
+  1. 🚨 /.git/HEAD is exposed - take down immediately
   2. Renew TLS certificate (12 days left!)
   3. Add DMARC record
   4. Add Content-Security-Policy header
@@ -121,12 +121,12 @@ HackGuard performs **non-intrusive, read-only passive checks only**.
 ## Requirements
 
 - Claude Code (any version)
-- `curl`, `dig`, `openssl` — available by default on macOS/Linux
-- `nmap` — optional, for port scanning
+- `curl`, `dig`, `openssl` - available by default on macOS/Linux
+- `nmap` - optional, for port scanning
 
 ---
 
 ## License
 
-MIT — free to use, modify, and distribute.  
+MIT - free to use, modify, and distribute.  
 Built with ❤️ by [mysiteishackable.com](https://mysiteishackable.com)

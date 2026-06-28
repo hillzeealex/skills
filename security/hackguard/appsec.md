@@ -1,11 +1,11 @@
-# HackGuard — Application Security (white-box + dynamic) reference
+# HackGuard - Application Security (white-box + dynamic) reference
 
 Deep methodology for auditing an app you have **source access** to, and for
 **non-destructive dynamic testing** against a local/staging instance. This goes
-beyond the passive external scan (headers/TLS/DNS) — it hunts exploitable
+beyond the passive external scan (headers/TLS/DNS) - it hunts exploitable
 application bugs.
 
-## Guardrails (read first — non-negotiable)
+## Guardrails (read first - non-negotiable)
 
 - **Own-asset only.** Source audit and dynamic tests run only on code/instances
   the user owns or is explicitly authorized to test.
@@ -36,7 +36,7 @@ For each finding report: **title · severity · file:line (or request) · how it
 
 ---
 
-## Mode B — White-box code audit
+## Mode B - White-box code audit
 
 Walk the source by vuln class. For each class: where to look, what's wrong, how to confirm. Tailored to a TypeScript / Express / ORM / cookie-auth / S3 / Stripe stack; adapt paths to the actual repo layout (`grep`/read to locate the real files).
 
@@ -116,11 +116,11 @@ Walk the source by vuln class. For each class: where to look, what's wrong, how 
 
 **Method:** prefer parallel read-only explore agents, one per vuln class, each
 returning findings with file:line. Then dedupe and severity-rank. Confirm each
-suspected bug by reading the actual code path end to end — no vibes, show the line.
+suspected bug by reading the actual code path end to end - no vibes, show the line.
 
 ---
 
-## Mode C — Dynamic local/staging pentest (non-destructive)
+## Mode C - Dynamic local/staging pentest (non-destructive)
 
 Only after confirming the target is a **local or staging** instance the user owns.
 
@@ -139,15 +139,15 @@ Only after confirming the target is a **local or staging** instance the user own
 - **Role matrix:** for each role, attempt each privileged action; build a
   pass/fail matrix. Reader performing admin mutations = finding.
 - **Input validation:** malformed/oversized JSON, wrong types, missing required,
-  extra fields (mass-assignment), classic injection marker strings in inputs —
+  extra fields (mass-assignment), classic injection marker strings in inputs -
   observe handling (proper 400 vs 500/leak). Keep payloads benign.
 - **File upload:** try disallowed types, oversized, `../` in filename, a
-  script-bearing SVG — with harmless test files.
+  script-bearing SVG - with harmless test files.
 - **Auth flows:** reuse a reset token twice, use an expired/forged token, skip
   email verification, check logout truly invalidates the session, check cookie
   flags on the wire.
 - **Rate limiting:** light burst on login/reset to confirm limits fire (a handful
-  of requests — never a flood).
+  of requests - never a flood).
 - **Headers/TLS** on the local instance (reuse Mode A modules).
 
 Capture each as request → observed response → verdict. Never escalate to volume
@@ -163,12 +163,12 @@ most dangerous first:
 ```
 // APPLICATION SECURITY (white-box + dynamic) ──────────
 🔴 CRITICAL  Cross-tenant IDOR on documents
-   where : GET /api/documents/:id — document-repo.ts:N (no org scoping)
+   where : GET /api/documents/:id - document-repo.ts:N (no org scoping)
    repro : org-B session reads org-A document id → 200 + body
    fix   : add AND organization_id = session.orgId to the query
 
 🟠 HIGH      PII stored in clear (no column encryption)
-   where : schema/profiles.ts — phone: text(); no crypto module
+   where : schema/profiles.ts - phone: text(); no crypto module
    impact: a DB/S3 dump exposes all client PII
    fix   : envelope-encrypt sensitive columns; blind-index searchable fields
 
@@ -181,10 +181,10 @@ clean (so the report shows coverage, not just hits).
 
 ---
 
-## HTML report (for Mode B / C — rendered, like a pentest deliverable)
+## HTML report (for Mode B / C - rendered, like a pentest deliverable)
 
 After the terminal report, also produce a **self-contained HTML report** and open
-it — the shareable artifact a client/CTO actually reads.
+it - the shareable artifact a client/CTO actually reads.
 
 **Where:** write to the OS temp dir, never the repo. Resolve `$TMPDIR` (fallback
 `/tmp`, or `%TEMP%` on Windows) and write `<tmpdir>/hackguard-report-<timestamp>.html`
@@ -193,33 +193,33 @@ Windows. Tell the user the absolute path.
 
 **Build:** single self-contained HTML file. Be visual and editorial, not a wall of text.
 
-**Design system — match mysiteishackable.com (hacker/terminal DA):**
+**Design system - match mysiteishackable.com (hacker/terminal DA):**
 - Background pure black `#000`; surface `#0a0a0a`; borders `#1a1a1a` / `#222`.
 - **Sharp corners everywhere** (`border-radius:0`), monospace only:
   `Share Tech Mono` for headers/display, `IBM Plex Mono` for body (Google Fonts).
 - Accent neon green `#00ff41` (links, prompts `>`, `_` blink, "PASS" markers).
 - Severity colors: Critical `#ff3333`, High `#ff8800`, Medium `#ffcc00`, Low `#00aaff`.
 - High-contrast text: primary `#e8e8e8` on black; secondary `#888`; never low-contrast
-  greys on dark (the common mistake — keep findings readable).
+  greys on dark (the common mistake - keep findings readable).
 - Terminal touches: faint scanline background, `//` and `>` label prefixes, `[PASS]`
   tags, a blinking cursor. Left accent border per severity on each finding card.
 - Stat cards (counts per severity) with a colored top border matching the severity.
 
 **Structure:**
-1. **Header banner** — target, mode (white-box / dynamic / both), timestamp,
+1. **Header banner** - target, mode (white-box / dynamic / both), timestamp,
    instance tested (local/staging label so prod is never implied).
-2. **Risk summary** — big counts per severity (Critical/High/Medium/Low) as
+2. **Risk summary** - big counts per severity (Critical/High/Medium/Low) as
    colored stat cards, plus a one-line overall verdict.
 3. **Finding cards**, grouped by severity, most dangerous first. Each card:
    - severity badge (🔴/🟠/🟡/🔵 with matching color), title
    - **Location** (`file:line` or the HTTP request)
-   - **Exploitability** — how an attacker reaches it, in plain language
-   - **Proof / repro** — the code excerpt or the request→response, in a `<pre>`
-   - **Fix** — concrete remediation
+   - **Exploitability** - how an attacker reaches it, in plain language
+   - **Proof / repro** - the code excerpt or the request→response, in a `<pre>`
+   - **Fix** - concrete remediation
    - optional **before/after** code snippet (vulnerable vs patched), side by side
-4. **Coverage section** — vuln classes tested and found clean, so the report shows
+4. **Coverage section** - vuln classes tested and found clean, so the report shows
    breadth, not just hits.
-5. **Top priority** — the one finding to fix first and why.
+5. **Top priority** - the one finding to fix first and why.
 
 **Style guidance:** dark header, severity colors consistent with the model
 (🔴 red, 🟠 orange, 🟡 amber, 🔵 blue), monospace for code/requests, generous
