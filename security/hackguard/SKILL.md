@@ -10,6 +10,10 @@ description: >
   or exposed files on a domain. Always use this skill — even for quick one-liner
   requests like "check headers for example.com". This skill powers the HackGuard
   auditor from mysiteishackable.com.
+  ALSO use it for application-level security on a codebase the user owns: "find
+  vulnerabilities in my app", "audit my code for security", "try to hack my
+  platform", "pentest my app", "check for IDOR / SQL injection / SSRF / broken
+  access control", "is my app secure".
 ---
 
 # HackGuard — Website Security Auditor
@@ -18,12 +22,33 @@ A professional, non-intrusive security auditing skill. Runs passive read-only
 checks against any domain and produces a structured report with score, grade,
 and remediation guidance.
 
-**⚠ Ethics rule**: Only scan domains the user owns or has explicit permission to test.
-Always remind the user of this before running.
+**⚠ Ethics rule**: Only scan/test assets the user owns or has explicit permission
+to test. Always confirm this before running. **Active (dynamic) testing runs only
+against a local or staging instance — never against production or any system
+serving real user data.** No DoS, no destructive mutations, no detection evasion.
 
 ---
 
-## Workflow
+## Modes
+
+Pick the mode from what the user asked for. Modes combine.
+
+| Mode | Use when | Where |
+|---|---|---|
+| **A — External passive scan** | "audit/scan this site", "check headers", a bare domain/URL | This file (Workflow below) |
+| **B — White-box code audit** | "find vulnerabilities in my app", "audit my code", source access available | → `appsec.md` (Mode B) |
+| **C — Dynamic pentest** | "try to hack my app", "pentest it", active probing | → `appsec.md` (Mode C) — **local/staging only** |
+
+- Bare domain / external posture → **Mode A**, follow the Workflow below.
+- "Find vulnerabilities / hack my app" with a repo present → **Modes B + C**:
+  read `appsec.md` first (guardrails, vuln classes, dynamic probes, severity model,
+  and the **rendered HTML report**), then execute. Confirm the dynamic target is
+  local/staging before any active probe.
+- All modes end with the report (terminal + HTML for B/C).
+
+---
+
+## Workflow (Mode A — external passive scan)
 
 1. Parse and normalize the target URL → extract hostname
 2. Confirm with user if domain looks unusual or sensitive
